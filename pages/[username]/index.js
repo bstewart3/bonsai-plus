@@ -1,7 +1,3 @@
-export default function AminPostPage({ }) {
-    return (
-        <main>
-
-        </main>
-    )
+export default function AminPostPage({}) {
+  return <main></main>;
 }
