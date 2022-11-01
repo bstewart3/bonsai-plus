@@ -3,8 +3,8 @@ import Link from "next/link";
 //top navbar
 
 export default function Navbar() {
-    const user = null;
-    const username = null;
+    const user = true;
+    const username = true;
 
 
     return (
@@ -31,7 +31,7 @@ export default function Navbar() {
                         </>
                     )}
 
-                    
+
                     {/* user has not signed-in or has not created a username */}
                     {!username && (
                         <li>
