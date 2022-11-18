@@ -1,4 +1,5 @@
-import { useContext, useEffect } from "react";
+import debounce from "lodash.debounce";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../lib/context";
 import { auth, firestore, googleAuthProvider } from "../lib/firebase";
 
@@ -68,14 +69,39 @@ function UsernameForm() {
       setIsValid(false);
     }
   };
-  const checkUserName = async (username) => {
-    if (username.length >= 3) {
-      const ref = firestore.doc(`usernames/${usermname}`);
-      const { exists } = await ref.get();
-      console.log("Firestore read executed!");
+  const checkUserName = useCallback(
+    debounce(async (username) => {
+      if (username.length >= 3) {
+        const ref = firestore.doc(`usernames/${username}`);
+        const { exists } = await ref.get();
+        console.log("Firestore read executed!");
 
-      setIsValid(!exists);
-      setLoading(false);
+        setIsValid(!exists);
+        setLoading(false);
+      }
+    }, 500),
+    []
+  );
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    //create refs for both documents
+    const userDoc = firestore.doc(`users/${user.uid}`);
+    const usernameDoc = firestore.doc(`usernames/${formValue}`);
+
+    // commit both docs together as a batch write
+    try {
+      const batch = firestore.batch();
+      batch.set(userDoc, {
+        username: formValue,
+        photoURL: user.photoURL,
+        displayName: user.displayName,
+      });
+      batch.set(usernameDoc, { uid: user.uid });
+
+      await batch.commit();
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -90,6 +116,13 @@ function UsernameForm() {
             value={formValue}
             onChange={onChange}
           />
+
+          <UsernameMessage
+            username={formValue}
+            isValid={isValid}
+            onChange={onChange}
+          />
+
           <button type="submit" className="btn-green" disabled={!isValid}>
             Choose
           </button>
@@ -105,4 +138,16 @@ function UsernameForm() {
       </section>
     )
   );
+}
+
+function UsernameMessage({ username, isValid, loading }) {
+  if (loading) {
+    return <p>Checking...</p>;
+  } else if (isValid) {
+    return <p className="text-success">{username} is available!</p>;
+  } else if (username && !isValid) {
+    return <p className="text-danger">That username is taken!</p>;
+  } else {
+    return <p></p>;
+  }
 }
