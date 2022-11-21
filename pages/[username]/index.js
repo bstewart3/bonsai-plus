@@ -1,9 +1,10 @@
 import PostFeed from "../../components/PostFeed";
 import UserProfile from "../../components/UserProfile";
+import { getUserWithUsername, postToJSON } from "../../lib/firebase";
 
 export async function getServerSideProps({ query }) {
   const { username } = query;
-  const userDoc = await getUserWithUserName(username);
+  const userDoc = await getUserWithUsername(username);
 
   let user = null;
   let posts = null;
@@ -24,7 +25,7 @@ export async function getServerSideProps({ query }) {
   };
 }
 
-export default function AminPostPage({}) {
+export default function AminPostPage({ user, posts }) {
   return (
     <main>
       <UserProfile user={user} />
