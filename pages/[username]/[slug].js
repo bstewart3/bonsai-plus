@@ -1,5 +1,4 @@
 import PostContent from "../../components/PostContent";
-import styles from "../../styles/Post.module.css";
 
 import { firestore, getUserWithUserName, postToJSON } from "../../lib/firebase";
 
@@ -29,7 +28,7 @@ export async function getStaticPaths() {
   const snapshot = await firestore.collectionGroup("posts").get();
 
   const paths = snapshot.docs.map((doc) => {
-    const { slug, username } = doc.data;
+    const { slug, username } = doc.data();
     return {
       params: { username, slug },
     };

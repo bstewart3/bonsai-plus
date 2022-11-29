@@ -5,9 +5,12 @@ import styles from "../../styles/Admin.module.css";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import { useForm } from "react-hook-form";
-
 import { useDocumentData } from "react-firebase-hooks/firestore";
+import { useForm } from "react-hook-form";
+import ReactMarkdown from "react-markdown";
+
+import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function AdminPostEdit(props) {
   return (
@@ -44,6 +47,15 @@ function PostManager() {
               preview={preview}
             />
           </section>
+          <aside>
+            <h3>Tools</h3>
+            <button onClick={() => setPreview(!preview)}>
+              {preview ? "Edit" : "Preview"}
+            </button>
+            <Link href={`/${post.username}/${post.slug}`}>
+              <button className="btn-blue"> Live view</button>
+            </Link>
+          </aside>
         </>
       )}
     </main>
@@ -64,7 +76,7 @@ function PostForm({ defaultValues, postRef, preview }) {
     });
 
     reset({ content, published });
-    TransformStream.success("Post updated successfully");
+    toast.success("Post updated successfully");
   };
 
   return (
