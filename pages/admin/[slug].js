@@ -2,11 +2,14 @@ import AuthCheck from "../../components/AuthCheck";
 import { auth, firestore, serverTimestamp } from "../../lib/firebase";
 import styles from "../../styles/Admin.module.css";
 
+import ImageUploader from "../../components/ImageUploader";
+
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { useForm } from "react-hook-form";
+
 import ReactMarkdown from "react-markdown";
 
 import Link from "next/link";
@@ -90,6 +93,8 @@ function PostForm({ defaultValues, postRef, preview }) {
       )}
 
       <div className={preview ? styles.hidden : styles.controls}>
+        <ImageUploader />
+
         <textarea
           name="content"
           ref={register({
