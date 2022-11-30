@@ -1,12 +1,17 @@
+import HeartButton from "../../components/HeartButton";
 import PostContent from "../../components/PostContent";
 
-import { firestore, getUserWithUserName, postToJSON } from "../../lib/firebase";
+import styles from "../../styles/Home.module.css";
 
+import { firestore, getUserWithUsername, postToJSON } from "../../lib/firebase";
+
+import Link from "next/link";
 import { useDocumentData } from "react-firebase-hooks/firestore";
+import AuthCheck from "../../components/AuthCheck";
 
 export async function getStaticProps({ params }) {
   const { username, slug } = params;
-  const userDoc = await getUserWithUserName(username);
+  const userDoc = await getUserWithUsername(username);
 
   let post;
   let path;
@@ -60,6 +65,15 @@ export default function Post(props) {
         <p>
           <strong>{post.heartCount || 0} 🖤</strong>
         </p>
+        <AuthCheck
+          fallback={
+            <Link href={"/enter"}>
+              <button>Sign up</button>
+            </Link>
+          }
+        >
+          <HeartButton postRef={postRef} />
+        </AuthCheck>
       </aside>
     </main>
   );

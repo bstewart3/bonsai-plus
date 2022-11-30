@@ -4,7 +4,7 @@ import ReactMarkdown from "react-markdown";
 //UI component for main post content
 
 export default function PostContent({ post }) {
-  const crteatedAt =
+  const createdAt =
     typeof post?.createdAt === "number"
       ? new Date(post.createdAt)
       : post.createdAt.toDate();
